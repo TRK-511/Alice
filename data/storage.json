@@ -1,0 +1,236 @@
+{
+  "library": [],
+  "verified": [],
+  "warns": {
+    "1435093977001889917": [
+      {
+        "reason": "Auto-mod triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368699180
+      },
+      {
+        "reason": "Auto-mod triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368704904
+      },
+      {
+        "reason": "Auto-mod triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368722407
+      },
+      {
+        "reason": "Auto-mod triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368726555
+      },
+      {
+        "reason": "Auto-mod triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368729302
+      },
+      {
+        "reason": "Auto-mod triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368729998
+      },
+      {
+        "reason": "Auto-mod triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368808133
+      },
+      {
+        "reason": "Caps Filter triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368920254
+      },
+      {
+        "reason": "Caps Filter triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778368954574
+      },
+      {
+        "reason": "Link Filter triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778369244307
+      },
+      {
+        "reason": "Link Filter triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778369270991
+      },
+      {
+        "reason": "Link Filter triggered",
+        "moderator": "AutoMod",
+        "timestamp": 1778369296587
+      },
+      {
+        "reason": "Repeated spam messages are not allowed",
+        "moderator": "AutoMod",
+        "timestamp": 1778369654467
+      },
+      {
+        "reason": "Discord Invite links arent allowed",
+        "moderator": "AutoMod",
+        "timestamp": 1778369769692
+      },
+      {
+        "reason": "Repeated spam messages are not allowed",
+        "moderator": "AutoMod",
+        "timestamp": 1778370218245
+      },
+      {
+        "reason": "Discord Invite links arent allowed",
+        "moderator": "AutoMod",
+        "timestamp": 1778370259286
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778370597324
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778370686904
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778370694137
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778370710107
+      },
+      {
+        "reason": "Repeated spam messages are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778377421321
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778377449938
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778378374901
+      },
+      {
+        "reason": "Repeated spam messages are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778420038093
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778420058239
+      }
+    ],
+    "1485450339040886785": [
+      {
+        "reason": "Repeated spam messages are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778370543994
+      },
+      {
+        "reason": "Discord Invite links are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778382105628
+      },
+      {
+        "reason": "component",
+        "moderator": "u8kx",
+        "timestamp": 1778418056784
+      },
+      {
+        "reason": "test",
+        "moderator": "u8kx",
+        "timestamp": 1778418182717
+      },
+      {
+        "reason": "s",
+        "moderator": "u8kx",
+        "timestamp": 1778419800844
+      },
+      {
+        "reason": "Test",
+        "moderator": "k12x",
+        "timestamp": 1778442615456
+      }
+    ],
+    "1123551005993357342": [
+      {
+        "reason": "Warned via userinfo panel",
+        "moderator": "u8kx",
+        "timestamp": 1778418018768
+      }
+    ],
+    "1325558514587799635": [
+      {
+        "reason": "Repeated spam messages are not allowed.",
+        "moderator": "AutoMod",
+        "timestamp": 1778439598182
+      }
+    ]
+  },
+  "xp": {},
+  "reactionroles": [],
+  "config": {
+    "welcomeChannelId": "1353884133037965386",
+    "goodbyeChannelId": "1353884133037965389",
+    "welcomeMessage": "Welcome to [server], You are member [memberCount].\nPlease visit [channel:❲✅❳┇start-here]!",
+    "goodbyeMessage": "Thanks for being part of [server].\nWe now have [memberCount] members.",
+    "logChannelId": "1353884136208728098",
+    "verifiedRoleId": "",
+    "embedColor": 15548997,
+    "xpEnabled": false,
+    "xpPerMessage": 3,
+    "xpCooldown": 60,
+    "autoMod": {
+      "enabled": true,
+      "caps": true,
+      "spam": true,
+      "mentions": true,
+      "links": true,
+      "master": true
+    }
+  },
+  "spam_1435093977001889917": {
+    "words": {
+      "1459965691653263493": 1
+    },
+    "msgs": [
+      "1503044079947223172"
+    ],
+    "time": 1778424033066
+  },
+  "spam_1485450339040886785": {
+    "words": {
+      "hel": 1
+    },
+    "msgs": [
+      "1503122790252019824"
+    ],
+    "time": 1778442799086
+  },
+  "rr_panel_1503044081004318908": [
+    {
+      "emoji": "🧱",
+      "roleId": "1459965691653263493",
+      "label": "Npc"
+    }
+  ],
+  "spam_1325558514587799635": {
+    "words": {
+      "408": 1,
+      "what": 1
+    },
+    "msgs": [
+      "1503117850062098442"
+    ],
+    "time": 1778441621316
+  }
+}
