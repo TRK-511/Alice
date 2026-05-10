@@ -82,4 +82,6 @@ client.once('ready', () => {
 
 client.on('interactionCreate', require('./src/events/interactionCreate'));
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN)
+  .then(() => console.log('Login successful'))
+  .catch((err) => console.log('Login failed:', err.message));
