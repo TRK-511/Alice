@@ -25,6 +25,10 @@ const client = new Client({
   ]
 });
 
+client.on('debug', (msg) => console.log('DEBUG:', msg));
+client.on('error', (err) => console.log('CLIENT ERROR:', err.message));
+client.on('warn', (msg) => console.log('WARN:', msg));
+
 client.commands = new Map();
 client.modals = new Map();
 client.buttons = new Map();
