@@ -21,13 +21,21 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageTyping
   ]
 });
 
-client.on('debug', (msg) => console.log('DEBUG:', msg));
+client.on('debug', (msg) => {
+  if (msg.includes('WebSocket') || msg.includes('gateway')) {
+    console.log('DEBUG:', msg);
+  }
+});
 client.on('error', (err) => console.log('CLIENT ERROR:', err.message));
 client.on('warn', (msg) => console.log('WARN:', msg));
+client.on('disconnect', () => console.log('Client disconnected'));
+client.on('reconnecting', () => console.log('Client reconnecting'));
+client.on('resume', () => console.log('Client resumed'));
 
 client.commands = new Map();
 client.modals = new Map();
@@ -80,8 +88,19 @@ client.once('ready', () => {
   console.log(`Loaded ${client.commands.size} commands`);
 });
 
+client.once('clientReady', () => {
+  console.log(`Alice is online as ${client.user.tag} (clientReady)`);
+  console.log(`Loaded ${client.commands.size} commands`);
+});
+
 client.on('interactionCreate', require('./src/events/interactionCreate'));
 
-client.login(process.env.TOKEN)
+const loginPromise = client.login(process.env.TOKEN);
+
+setTimeout(() => {
+  console.log('Login still pending after 30 seconds...');
+}, 30000);
+
+loginPromise
   .then(() => console.log('Login successful'))
   .catch((err) => console.log('Login failed:', err.message));
