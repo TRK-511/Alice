@@ -3,6 +3,10 @@ const path = require('path');
 const fs = require('fs');
 
 const express = require('express');
+
+console.log('TOKEN value:', process.env.TOKEN ? 'exists' : 'undefined');
+console.log('TOKEN length:', process.env.TOKEN ? process.env.TOKEN.length : 0);
+
 const app = express();
 
 app.get('/', (req, res) => res.send('Bot is running'));
