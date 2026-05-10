@@ -2,6 +2,14 @@ const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => res.send('Bot is running'));
+app.get('/health', (req, res) => res.send('OK'));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`HTTP server on port ${PORT}`));
 
 const client = new Client({
   intents: [
