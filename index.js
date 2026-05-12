@@ -1,158 +1,106 @@
-const { Client, GatewayIntentBits } = require(‘discord.js’);
-const path = require(‘path’);
-const fs = require(‘fs’);
-const express = require(‘express’);
+const { Client, GatewayIntentBits } = require('discord.js');
+const path = require('path');
+const fs = require('fs');
 
-// ── Startup ──────────────────────────────────────────────────────────────────
-console.log(’[BOOT] index.js started’);
-console.log(’[BOOT] Node version:’, process.version);
-console.log(’[BOOT] TOKEN:’, process.env.TOKEN ? `exists (length ${process.env.TOKEN.length})` : ‘MISSING’);
-console.log(’[BOOT] CLIENT_ID:’, process.env.CLIENT_ID ? `exists` : ‘not set’);
-console.log(’[BOOT] PORT:’, process.env.PORT || 3000);
+const express = require('express');
 
-// ── HTTP server (keeps Render alive) ─────────────────────────────────────────
+console.log('TOKEN value:', process.env.TOKEN ? 'exists' : 'undefined');
+console.log('TOKEN length:', process.env.TOKEN ? process.env.TOKEN.length : 0);
+
 const app = express();
-app.get(’/’, (req, res) => res.send(‘Alice is running’));
-app.get(’/health’, (req, res) => res.send(‘OK’));
+
+app.get('/', (req, res) => res.send('Bot is running'));
+app.get('/health', (req, res) => res.send('OK'));
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`[HTTP] Server listening on port ${PORT}`));
+app.listen(PORT, () => console.log(`HTTP server on port ${PORT}`));
 
-// ── Discord client ────────────────────────────────────────────────────────────
-console.log(’[CLIENT] Creating Discord client…’);
 const client = new Client({
-intents: [
-GatewayIntentBits.Guilds,
-GatewayIntentBits.GuildMembers,
-GatewayIntentBits.GuildMessages,
-GatewayIntentBits.GuildPresences,
-GatewayIntentBits.MessageContent,
-GatewayIntentBits.GuildMessageTyping
-]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageTyping
+  ]
 });
-console.log(’[CLIENT] Client created’);
 
-// ── Gateway debug events ──────────────────────────────────────────────────────
-client.on(‘debug’, (msg) => {
-if (msg.includes(‘Identified’) || msg.includes(‘READY’) || msg.includes(‘token’) ||
-msg.includes(‘gateway’) || msg.includes(‘WebSocket’) || msg.includes(‘401’) ||
-msg.includes(‘4004’) || msg.includes(‘Invalid’)) {
-console.log(’[GATEWAY]’, msg);
-}
+client.on('debug', (msg) => {
+  if (msg.includes('WebSocket') || msg.includes('gateway')) {
+    console.log('DEBUG:', msg);
+  }
 });
-client.on(‘error’, (err) => console.error(’[CLIENT ERROR]’, err.message));
-client.on(‘warn’, (msg) => console.warn(’[WARN]’, msg));
-client.on(‘shardError’, (err, shardId) => console.error(`[SHARD ${shardId} ERROR]`, err.message));
-client.on(‘shardReady’, (id) => console.log(`[SHARD ${id}] Ready`));
-client.on(‘shardDisconnect’, (event, id) => console.log(`[SHARD ${id}] Disconnected — code ${event.code}`));
-client.on(‘shardReconnecting’, (id) => console.log(`[SHARD ${id}] Reconnecting...`));
-client.on(‘shardResume’, (id, replayed) => console.log(`[SHARD ${id}] Resumed — replayed ${replayed} events`));
-client.on(‘invalidated’, () => console.error(’[SESSION] Session invalidated — token may be revoked’));
-client.on(‘rateLimit’, (info) => console.warn(’[RATE LIMIT]’, info.route, ‘— timeout’, info.timeout));
+client.on('error', (err) => console.log('CLIENT ERROR:', err.message));
+client.on('warn', (msg) => console.log('WARN:', msg));
+client.on('disconnect', () => console.log('Client disconnected'));
+client.on('reconnecting', () => console.log('Client reconnecting'));
+client.on('resume', () => console.log('Client resumed'));
 
-// ── Collections ───────────────────────────────────────────────────────────────
 client.commands = new Map();
 client.modals = new Map();
 client.buttons = new Map();
 client.selectMenus = new Map();
 
-// ── Load commands ─────────────────────────────────────────────────────────────
 function loadCommands(dir) {
-const fullPath = path.join(__dirname, dir);
-if (!fs.existsSync(fullPath)) {
-console.warn(`[COMMANDS] Directory not found: ${fullPath}`);
-return;
-}
-const files = fs.readdirSync(fullPath).filter(f => f.endsWith(’.js’));
-console.log(`[COMMANDS] Loading ${files.length} file(s) from ${dir}`);
-for (const file of files) {
-try {
-const cmd = require(path.join(fullPath, file));
-if (cmd.data && cmd.data.name) {
-client.commands.set(cmd.data.name, cmd);
-console.log(`[COMMANDS]   ✓ ${cmd.data.name}`);
-}
-if (cmd.modalData) client.modals.set(cmd.modalData.customId, cmd);
-if (cmd.buttonData) client.buttons.set(cmd.buttonData.customId, cmd);
-if (cmd.selectMenuData) client.selectMenus.set(cmd.selectMenuData.customId, cmd);
-} catch (err) {
-console.error(`[COMMANDS]   ✗ Failed to load ${file}:`, err.message);
-}
-}
+  const fullPath = path.join(__dirname, dir);
+  if (!fs.existsSync(fullPath)) return;
+  const files = fs.readdirSync(fullPath).filter(f => f.endsWith('.js'));
+  for (const file of files) {
+    const cmd = require(path.join(fullPath, file));
+    if (cmd.data && cmd.data.name) client.commands.set(cmd.data.name, cmd);
+    if (cmd.modalData) client.modals.set(cmd.modalData.customId, cmd);
+    if (cmd.buttonData) client.buttons.set(cmd.buttonData.customId, cmd);
+    if (cmd.selectMenuData) client.selectMenus.set(cmd.selectMenuData.customId, cmd);
+  }
 }
 
-// ── Load events ───────────────────────────────────────────────────────────────
 function loadEvents(dir) {
-const fullPath = path.join(__dirname, dir);
-if (!fs.existsSync(fullPath)) {
-console.warn(`[EVENTS] Directory not found: ${fullPath}`);
-return;
-}
-const files = fs.readdirSync(fullPath).filter(f => f.endsWith(’.js’));
-console.log(`[EVENTS] Loading ${files.length} file(s) from ${dir}`);
-const map = {
-guildMemberAdd: ‘guildMemberAdd’,
-guildMemberRemove: ‘guildMemberRemove’,
-messageCreate: ‘messageCreate’,
-messageUpdate: ‘messageUpdate’,
-messageDelete: ‘messageDelete’,
-roleChange: ‘guildMemberUpdate’
-};
-for (const file of files) {
-try {
-const event = require(path.join(fullPath, file));
-const name = file.replace(’.js’, ‘’);
-const discordEvent = map[name];
-if (discordEvent) {
-client.on(discordEvent, event);
-console.log(`[EVENTS]   ✓ ${name} → ${discordEvent}`);
-} else {
-console.log(`[EVENTS]   ~ ${name} (no mapping, skipped)`);
-}
-} catch (err) {
-console.error(`[EVENTS]   ✗ Failed to load ${file}:`, err.message);
-}
-}
+  const fullPath = path.join(__dirname, dir);
+  if (!fs.existsSync(fullPath)) return;
+  const files = fs.readdirSync(fullPath).filter(f => f.endsWith('.js'));
+  for (const file of files) {
+    const event = require(path.join(fullPath, file));
+    const eventName = file.replace('.js', '');
+    if (eventName === 'guildMemberAdd') {
+      client.on('guildMemberAdd', event);
+    } else if (eventName === 'guildMemberRemove') {
+      client.on('guildMemberRemove', event);
+    } else if (eventName === 'messageCreate') {
+      client.on('messageCreate', event);
+    } else if (eventName === 'messageUpdate') {
+      client.on('messageUpdate', event);
+    } else if (eventName === 'messageDelete') {
+      client.on('messageDelete', event);
+    } else if (eventName === 'roleChange') {
+      client.on('guildMemberUpdate', event);
+    }
+  }
 }
 
-console.log(’[BOOT] Loading commands…’);
-loadCommands(’./src/commands/utility’);
-loadCommands(’./src/commands/moderation’);
-loadCommands(’./src/commands/admin’);
-console.log(`[BOOT] Total commands loaded: ${client.commands.size}`);
+loadCommands('./src/commands/utility');
+loadCommands('./src/commands/moderation');
+loadCommands('./src/commands/admin');
+loadEvents('./src/events');
 
-console.log(’[BOOT] Loading events…’);
-loadEvents(’./src/events’);
-
-// ── Interaction handler ───────────────────────────────────────────────────────
-console.log(’[BOOT] Registering interactionCreate handler…’);
-client.on(‘interactionCreate’, (interaction) => {
-console.log(`[INTERACTION] type=${interaction.type} user=${interaction.user?.tag} guild=${interaction.guildId}`);
-require(’./src/events/interactionCreate’)(interaction);
+client.once('ready', () => {
+  console.log(`Alice is online as ${client.user.tag}`);
+  console.log(`Loaded ${client.commands.size} commands`);
 });
 
-// ── Ready ─────────────────────────────────────────────────────────────────────
-client.once(‘clientReady’, (c) => {
-console.log(`[READY] Logged in as ${c.user.tag} (${c.user.id})`);
-console.log(`[READY] Serving ${c.guilds.cache.size} guild(s)`);
-console.log(`[READY] Commands registered: ${client.commands.size}`);
-c.guilds.cache.forEach(g => console.log(`[READY]   guild: ${g.name} (${g.id})`));
+client.once('clientReady', () => {
+  console.log(`Alice is online as ${client.user.tag} (clientReady)`);
+  console.log(`Loaded ${client.commands.size} commands`);
 });
 
-// ── Login ─────────────────────────────────────────────────────────────────────
-console.log(’[LOGIN] Attempting login…’);
+client.on('interactionCreate', require('./src/events/interactionCreate'));
 
-const loginTimeout = setTimeout(() => {
-console.error(’[LOGIN] Still pending after 30s — possible causes: invalid token, privileged intents not enabled in Dev Portal, or network block’);
+const loginPromise = client.login(process.env.TOKEN);
+
+setTimeout(() => {
+  console.log('Login still pending after 30 seconds...');
 }, 30000);
 
-client.login(process.env.TOKEN)
-.then(() => {
-clearTimeout(loginTimeout);
-console.log(’[LOGIN] Login call resolved successfully’);
-})
-.catch((err) => {
-clearTimeout(loginTimeout);
-console.error(’[LOGIN] Login failed:’, err.message);
-console.error(’[LOGIN] Code:’, err.code);
-process.exit(1);
-});
+loginPromise
+  .then(() => console.log('Login successful'))
+  .catch((err) => console.log('Login failed:', err.message));
